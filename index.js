@@ -340,12 +340,13 @@ function loadProduct() {
 	let product = window.location?.hash !== '' && window.location.pathname.includes('product') ? window.location.hash : undefined;
 
 	if (product !== undefined) {
-		let productData = [];
+		let productData = undefined;
+		let tempData = undefined;
 		let areaData = undefined;
 		areas.forEach((element) => {
 			tempData = element.products.filter((prod) => prod.productLink === product)[0];
-			productData = tempData ?? productData;
-			if (productData !== null && areaData === undefined) {
+			productData = tempData !== undefined ? tempData : productData;
+			if (productData !== undefined  && areaData === undefined) {
 				areaData = element;
 			}
 		});
@@ -393,6 +394,25 @@ function loadProduct() {
 		// product long description
 		let textContainer = document.getElementById('textContainer');
 		textContainer.innerHTML = loremIpsumLong;
+
+		// breadcrumbs
+		let breadcrumbsContainer = document.getElementById('breadcrumbs');
+		let linkHome = document.createElement('a');
+		let textHome = document.createTextNode('> Home');
+		linkHome.href = '/';
+		linkHome.appendChild(textHome);
+		breadcrumbsContainer.appendChild(linkHome);
+		
+		// link category
+		let linkCategory = document.createElement('a');
+		let textCat = document.createTextNode(` > ${areaData.areaTitle}`);
+		linkCategory.href = `../areas.html#${areaData.areaID}`;
+		linkCategory.appendChild(textCat);
+		breadcrumbsContainer.appendChild(linkCategory);
+
+		//text product
+		let textProd = document.createTextNode(` > ${productData.name}`);
+		breadcrumbsContainer.appendChild(textProd);
 
 		document.getElementById('productInformation').appendChild(h1);
 		document.getElementById('productInformation').appendChild(productImage);
